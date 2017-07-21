@@ -24,47 +24,13 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,13,0), "Обед", 500),
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,20,0), "Ужин", 510)
         );
-        getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12,0), 2000);
+        getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(14,0), 2000);
 //        .toLocalDate();
 //        .toLocalTime();
     }
 
     public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO return filtered list with correctly exceeded field
-        // разбиваем список на отдельные саб-списки связанные одной датой
-        HashMap<LocalDate,List<UserMeal>> mapList  = new HashMap<LocalDate,List<UserMeal>>();
-        LocalDate tmp = null;
-
-        for (int i= 0; i< mealList.size();i++) {
-            List<UserMeal>  listtmp =new ArrayList<UserMeal>();
-            if(i == 0){
-                tmp = mealList.get(i).getDateTime().toLocalDate();
-                listtmp.add(mealList.get(i)) ;
-                mapList.put(tmp,listtmp);
-                i++;
-            }
-            LocalDate t = mealList.get(i).getDateTime().toLocalDate();
-            if(t.equals(tmp)){
-                listtmp = mapList.get(tmp);
-                listtmp.add(mealList.get(i)) ;
-            }else {
-               try{
-                   if(!mapList.get(t).isEmpty()) {
-                       listtmp = mapList.get(t);
-                       listtmp.add(mealList.get(i));
-                       mapList.put(t, listtmp);
-                   }
-               } catch(NullPointerException ex){
-                       listtmp.add(mealList.get(i));
-                       mapList.put(t, listtmp);
-               }
-
-                tmp = t;
-            }
-              // to do
-        }
-
-      //  mapList.forEach((k,v) -> System.out.println("key: "+k + " val: "+v));
+        LocalDate tmp =null;
         Map<LocalDate,Integer> mapList2  = new HashMap<>();
         Collections.sort(mealList,(left, right) -> left.getDateTime().compareTo(right.getDateTime()));
         mealList.forEach((k) -> System.out.println(k.getDateTime()+" "+k.getDescription()+" " +k.getCalories()));
@@ -82,7 +48,7 @@ public class UserMealsUtil {
                 mapList2.put(tmp,summ);
             }else {
                 try{
-                    if(!mapList.get(t).isEmpty()) {
+                    if(mapList2.get(t) != 0) {
                         summ = mapList2.get(t) + mealList.get(i).getCalories();
                         mapList2.put(t,summ);
 
@@ -99,6 +65,8 @@ public class UserMealsUtil {
         List<UserMealWithExceed> listUMEx = new ArrayList<>();
         for(UserMeal um : mealList){
             boolean ex =true;
+            if(!TimeUtil.isBetween(um.getDateTime().toLocalTime(),startTime,endTime) )
+            {continue;}
             if( mapList2.get(um.getDateTime().toLocalDate()) <= caloriesPerDay )
             { ex = false;}
             listUMEx.add(new UserMealWithExceed(
@@ -110,7 +78,7 @@ public class UserMealsUtil {
 
         }
        listUMEx.forEach(v -> System.out.println(v.getDateTime()+" "+v.getDescription()+" "+v.getCalories()+" "+v.isExceed()));
-       // System.out.println(mapList.get(0));
+
 
         /*for (UserMeal meal : mealList) {
             LocalTime time = LocalTime.of(meal.getDateTime().getHour(), meal.getDateTime().getMinute());
@@ -119,7 +87,7 @@ public class UserMealsUtil {
             }
         }*/
 
-        return null;
+        return listUMEx;
     }
 
 
