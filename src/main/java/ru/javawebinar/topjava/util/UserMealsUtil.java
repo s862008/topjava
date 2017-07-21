@@ -109,7 +109,7 @@ public class UserMealsUtil {
             ) ;
 
         }
-       listUMEx.forEach(v -> System.out.println(v.getDateTime()+" "+v.getDescription()+" "+v.getDateTime()));
+       listUMEx.forEach(v -> System.out.println(v.getDateTime()+" "+v.getDescription()+" "+v.getCalories()+" "+v.isExceed()));
        // System.out.println(mapList.get(0));
 
         /*for (UserMeal meal : mealList) {
