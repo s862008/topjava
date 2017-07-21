@@ -34,6 +34,7 @@ public class UserMealsUtil {
         Map<LocalDate,Integer> mapList2  = new HashMap<>();
         Collections.sort(mealList,(left, right) -> left.getDateTime().compareTo(right.getDateTime()));
         mealList.forEach((k) -> System.out.println(k.getDateTime()+" "+k.getDescription()+" " +k.getCalories()));
+
         Integer summ =0;
         for(int i=0; i < mealList.size();i++){
             if(i == 0){
@@ -43,24 +44,27 @@ public class UserMealsUtil {
                 i++;
             }
             LocalDate t = mealList.get(i).getDateTime().toLocalDate();
+
             if(t.equals(tmp)){
                 summ = mapList2.get(tmp) + mealList.get(i).getCalories() ;
                 mapList2.put(tmp,summ);
             }else {
-                try{
-                    if(mapList2.get(t) != 0) {
+                    if(mapList2.getOrDefault(t,0) != 0) {
                         summ = mapList2.get(t) + mealList.get(i).getCalories();
                         mapList2.put(t,summ);
 
+                    }else {
+
+                        summ = mealList.get(i).getCalories();
+                        mapList2.put(t, summ);
                     }
-                } catch(NullPointerException ex){
-                    summ =  mealList.get(i).getCalories();
-                    mapList2.put(t, summ);
-                }
 
                 tmp = t;
             }
         }
+
+        LocalDate t2 = LocalDateTime.of(2015, Month.MAY, 30, 10, 0).toLocalDate();
+        mapList2.getOrDefault(t2,3);
         mapList2.forEach((k,v) -> System.out.println("key: "+k + " val: "+v));
         List<UserMealWithExceed> listUMEx = new ArrayList<>();
         for(UserMeal um : mealList){
