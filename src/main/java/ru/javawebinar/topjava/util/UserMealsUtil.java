@@ -63,8 +63,8 @@ public class UserMealsUtil {
             }
         }
 
-        LocalDate t2 = LocalDateTime.of(2015, Month.MAY, 30, 10, 0).toLocalDate();
-        mapList2.getOrDefault(t2,3);
+       /// LocalDate t2 = LocalDateTime.of(2015, Month.MAY, 30, 10, 0).toLocalDate();
+        ///mapList2.getOrDefault(t2,3);
         mapList2.forEach((k,v) -> System.out.println("key: "+k + " val: "+v));
         List<UserMealWithExceed> listUMEx = new ArrayList<>();
         for(UserMeal um : mealList){
